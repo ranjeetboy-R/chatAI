@@ -32,7 +32,10 @@ export const stripeWebHooks = async (req, res) => {
 
                 const { transactionId, appId } = session.metadata;
 
+                console.log("after appId", appId);
                 if (appId === 'chatAI') {
+console.log("before appId", appId);
+
                     const transaction = await Transaction.findOne({ _id: transactionId, isPaid: false })
 
                     if (!transaction) {
@@ -41,6 +44,7 @@ export const stripeWebHooks = async (req, res) => {
 
                     // Update credit in user account 
                     await User.updateOne({ _id: transaction.userId }, { $inc: { credits: transaction.credits } })
+console.log("transaction", transaction);
 
                     // Update credit Payment status 
                     transaction.isPaid = true;
