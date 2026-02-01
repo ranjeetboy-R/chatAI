@@ -3,7 +3,8 @@ import Transaction from "../models/Transaction.js";
 import User from "../models/userModel.js";
 
 export const stripeWebHooks = async (req, res) => {
-    const stripe = new Stripe(process.env.STRIPE_WEBHOOK_SECRET)
+
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
     const sig = req.headers["stripe-signature"]
 
     let event;
@@ -19,15 +20,24 @@ export const stripeWebHooks = async (req, res) => {
         switch (event.type) {
             case "payment_intent.succeeded": {
                 const paymentIntent = event.data.object;
-                const sessionList = await Stripe.checkout.sessions.list({
-                    payment_intent: paymentIntent
+                const sessionList = await stripe.checkout.sessions.list({
+                    payment_intent: paymentIntent.id
                 })
 
                 const session = sessionList.data[0];
+
+                if (!session) {
+                    return res.json({ received: true, message: "Checkout session not found" });
+                }
+
                 const { transactionId, appId } = session.metadata;
 
                 if (appId === 'chatAI') {
                     const transaction = await Transaction.findOne({ _id: transactionId, isPaid: false })
+
+                    if (!transaction) {
+                        return res.json({ received: true, message: "Transaction already processed or not found" });
+                    }
 
                     // Update credit in user account 
                     await User.updateOne({ _id: transaction.userId }, { $inc: { credits: transaction.credits } })
