@@ -44,7 +44,7 @@ export const purchasePlan = async (req, res) => {
         const plan = plans.find(plan => plan._id === planId)
 
         if (!plan) {
-            res.status(404).json({ success: false, message: "Invalid plan" })
+            return res.status(404).json({ success: false, message: "Invalid plan" })
         }
 
         // Create new Transaction 
@@ -53,7 +53,8 @@ export const purchasePlan = async (req, res) => {
             planId: plan._id,
             amount: plan.price,
             credits: plan.credits,
-            isPaid: false
+            isPaid: false,
+            appId: "chatAI"
         })
 
         const {origin} = req.headers;
