@@ -4,13 +4,41 @@ import { assets } from '../assets/assets';
 import moment, { } from "moment";
 import { Tooltip } from 'antd';
 import { BrushCleaning } from "lucide-react";
+import toast from 'react-hot-toast';
 
 const Sidebar = ({ isMenuOpen, setIsMenuOpen }) => {
-  const { user, chats, selectedChat, setSelectedChat, theme, setTheme, navigate } = useAppContext();
+  const { user, chats, setChats, selectedChat, setSelectedChat, theme, setTheme, navigate, createNewChat, fetchUserChat, token, setToken, axios } = useAppContext();
   const [search, setSearch] = useState('')
   const asideRef = useRef()
 
   const filter = chats.filter((chat) => chat.messages[0] ? chat.messages[0]?.content.toLowerCase().includes(search.toLowerCase()) : chat.name.toLowerCase().includes(search.toLowerCase()))
+
+  const logout = () => {
+    localStorage.removeItem("token")
+    setToken(null)
+    toast.success("Logged out")
+  }
+
+  const deleteChat = async (e, chatId) => {
+    e.stopPropagation();
+    try {
+      const { data } = await axios.delete('/api/chat/delete', {
+        data: { chatId },
+        headers: {
+          Authorization: token,
+        },
+      });
+
+      if (data.success) {
+        setChats(prev => prev.filter(chat => chat._id !== chatId))
+        await fetchUserChat()
+        toast.success(data.message)
+      }
+    }
+    catch (error) {
+      toast.error(error.response.data.message)
+    }
+  }
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -31,7 +59,7 @@ const Sidebar = ({ isMenuOpen, setIsMenuOpen }) => {
       <img src={theme === 'dark' ? assets.dark_logo : assets.light_logo} className='w-full max-w-44' />
 
       {/* New chat button */}
-      <button className="flex justify-center items-center active:scale-95 transition-all w-full py-2 mt-5 text-white bg-linear-to-r from-cyan-500 to-cyan-700 text-sm rounded cursor-pointer ">
+      <button onClick={createNewChat} className="flex justify-center items-center active:scale-95 transition-all w-full py-2 mt-5 text-white bg-linear-to-r from-cyan-500 to-cyan-700 text-sm rounded cursor-pointer ">
         <span className='mr-2 text-xl'>+</span> New Chat
       </button>
 
@@ -59,13 +87,13 @@ const Sidebar = ({ isMenuOpen, setIsMenuOpen }) => {
               >
                 <div onClick={() => { navigate('/'); setIsMenuOpen(false); setSelectedChat(chat) }} className='hover:pl-1 transition-all duration-300'>
                   <p className='truncate w-50 capitalize'>{chat.messages.length > 0 ? chat.messages[0].content.slice(0, 32) : chat.name}</p>
-                  <label className='group/2 w-fit flex items-center gap-1'>
+                  <label className='group/2 cursor-pointer w-fit flex items-center gap-1'>
                     <p className='text-xs text-gray-600 dark:text-[#B1A6C0]'>{moment(chat.updatedAt).fromNow()}</p>
-                    <p className='text-xs hidden group-hover/2:block text-gray-500 dark:text-[#B1A6C0]'>- {moment(chat.updatedAt).format("DD MMM YYYY, hh:mm A")}</p>
+                    <p className='text-xs opacity-0 group-hover/2:opacity-100 text-gray-500 dark:text-[#B1A6C0]'>- {moment(chat.updatedAt).format("DD MMM, hh:mm")}</p>
                   </label>
                 </div>
                 <Tooltip title="Remove chats">
-                  <button className="border cursor-pointer md:bg-white md:dark:bg-white/20 dark:hover:bg-white/10 transition-all duration-300 dark:border-gray-600 border-gray-200 shadow absolute top-1/2 -translate-y-1/2 right-2 md:hidden group-hover:block p-2 rounded-full">
+                  <button onClick={(e) => { toast.promise(deleteChat(e, chat._id), { loading: "Deleting..." }) }} className="border cursor-pointer md:bg-white hover:bg-black/10 md:dark:bg-white/20 dark:hover:bg-white/10 transition-all duration-300 dark:border-gray-600 border-gray-200 shadow absolute top-1/2 -translate-y-1/2 right-2 md:hidden group-hover:block p-2 rounded-full">
                     <img src={assets.bin_icon} className='w-4 not-dark:invert' />
                   </button>
                 </Tooltip>
@@ -118,7 +146,7 @@ const Sidebar = ({ isMenuOpen, setIsMenuOpen }) => {
           <p className='font-light'>{user?.name}</p>
         </div>
         <Tooltip title="Logout user">
-          <img src={assets.logout_icon} className='size-5 not-dark:invert opacity-0 group-hover:opacity-100 transition-all' />
+          <img onClick={logout} src={assets.logout_icon} className='size-5 not-dark:invert opacity-0 group-hover:opacity-100 transition-all' />
         </Tooltip>
       </div>
 

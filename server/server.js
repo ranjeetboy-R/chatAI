@@ -17,11 +17,11 @@ const port = process.env.PORT || 4000;
 database()
 
 // Stripe webhooks 
-app.post('/api/stripe', express.raw({type: 'application/json'}), stripeWebHooks)
+app.post('/api/stripe', express.raw({ type: 'application/json' }), stripeWebHooks)
 
 app.use(cors())
 app.use(express.json())
-app.use(express.urlencoded({extended: false}))
+app.use(express.urlencoded({ extended: false }))
 
 app.get('/', (req, res) => {
     res.send(`Hello Ranjeet, Server is running on port ${port}`)
@@ -32,6 +32,6 @@ app.use('/api/chat', chatRouter)
 app.use('/api/message', messageRouter)
 app.use('/api/credit', creditRouter)
 
-app.listen(port, ()=>{
-console.log(`Server is running on port ${port}`);
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
 })

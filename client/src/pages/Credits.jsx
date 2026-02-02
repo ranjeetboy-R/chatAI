@@ -2,15 +2,41 @@ import React, { useEffect, useState } from 'react'
 import { dummyPlans } from '../assets/assets'
 import Loading from './Loading'
 import { DollarSign } from "lucide-react";
+import { useAppContext } from '../context/AppContext';
+import toast from 'react-hot-toast';
 
 const Credits = () => {
 
   const [plans, setPlans] = useState([])
   const [loading, setLoading] = useState(true)
+  const {axios, token} = useAppContext()
 
+  // Getting plans 
   const loadPlans = async () => {
-    setPlans(dummyPlans)
+    try {
+      const {data} = await axios.get('/api/credit/plan')
+      if (data.success) {
+        setPlans(data.plans)
+      }
+      else{
+        toast.error(data.message)
+      }
+    } 
+    catch (error) {
+      toast.error(error.message)
+    }
     setLoading(false)
+  }
+
+  // Purchasing Plans
+  const purchasePlan = async (planId) => {
+    try {
+      const {data} = await axios.post('/api/credit/purchase', {planId}, {headers: {Authorization: token}})
+      window.location.href = data.url
+    } 
+    catch (error) {
+      toast.error(error.message)
+    }
   }
 
   useEffect(() => {
@@ -41,7 +67,7 @@ const Credits = () => {
                   ))
                 }
               </ul>
-              <button className="bg-linear-to-br from-cyan-400 to-teal-800 group-hover:scale-105 transition-all duration-300 text-white w-full mt-4 text-xs rounded cursor-pointer py-2">Get Started</button>
+              <button onClick={()=> toast.promise(purchasePlan(plan._id), {loading: "Processing..."})} className="bg-linear-to-br from-cyan-400 to-teal-800 group-hover:scale-105 transition-all duration-300 text-white w-full mt-4 text-xs rounded cursor-pointer py-2">Get Started</button>
             </div>
           ))
         }

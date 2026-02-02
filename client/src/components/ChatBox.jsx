@@ -4,10 +4,11 @@ import { assets } from '../assets/assets'
 import Message from './Message'
 import { Images, Send, SquareStop, TextInitial } from "lucide-react";
 import { Select } from 'antd';
+import toast from 'react-hot-toast';
 
 const ChatBox = () => {
 
-  const { selectedChat, theme } = useAppContext()
+  const { selectedChat, theme, axios, token, setUser, user } = useAppContext()
 
   const [messages, setMessages] = useState([])
   const [loading, setLoading] = useState(false)
@@ -18,9 +19,39 @@ const ChatBox = () => {
 
   const containerRef = useRef()
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault()
+    try {
+      if (!user) return toast.error("Login to send message")
+      setLoading(true)
+      const promptCopy = prompt
+      setPrompt('')
+      setMessages(prev => [...prev, { role: 'user', content: prompt, timestamp: Date.now(), isImage: false }])
 
+      const { data } = await axios.post(`/api/message/${mode}`, { chatId: selectedChat._id, prompt, isPublished }, { headers: { Authorization: token } })
+
+      if (data.success) {
+        setMessages(prev => [...prev, data.reply])
+
+        if (mode === "image") {
+          setUser(prev => ({ ...prev, credits: prev.credits - 2 }))
+        }
+        else {
+          setUser(prev => ({ ...prev, credits: prev.credits - 1 }))
+        }
+      }
+      else {
+        toast.error(data.message)
+        setPrompt(promptCopy)
+      }
+    }
+    catch (error) {
+      toast.error(error.message)
+    }
+    finally {
+      setPrompt('')
+      setLoading(false)
+    }
   }
 
   useEffect(() => {
@@ -52,7 +83,7 @@ const ChatBox = () => {
 
         {/* Show Messages */}
         {
-          messages.map((message, index) => (
+          messages?.map((message, index) => (
             <Message key={index} message={message} />
           ))
         }
@@ -92,7 +123,7 @@ const ChatBox = () => {
         </div>
 
         <div className="border border-gray-300 dark:border-gray-700 dark:bg-slate-800/30 hover:dark:border-gray-400 hover:border-teal-700 transition-all duration-300 hover:shadow w-full flex items-center max-w-3xl rounded-full">
-          <input autoFocus autoCorrect='on' onChange={(e) => setPrompt(e.target.value)} type="text" placeholder='Ask anything...' className='flex-1 pl-5 outline-none p-3 dark:text-white' />
+          <input autoFocus autoCorrect='on' value={prompt} onChange={(e) => setPrompt(e.target.value)} type="text" placeholder='Ask anything...' className='flex-1 pl-5 outline-none p-3 dark:text-white' />
           <button disabled={loading} className="bg-linear-to-b from-cyan-600 to-emerald-700 disabled:cursor-not-allowed disabled:opacity-70 dark:disabled:opacity-40 w-8 h-8 flex items-center justify-center text-white transition-all duration-300 cursor-pointer mr-2 rounded-full">
             {loading ? <SquareStop className='w-full max-w-5' /> : <Send className='w-full max-w-5' />}
           </button>

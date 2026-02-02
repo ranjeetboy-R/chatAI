@@ -12,7 +12,7 @@
   "dependencies": {
     "animate.css": "^4.1.1",
     "antd": "^6.2.2",
-    "axios": "^1.13.3",
+    "axios": "^1.13.4",
     "dotenv": "^17.2.3",
     "lucide-react": "^0.563.0",
     "moment": "^2.30.1",
