@@ -87,8 +87,6 @@ export const imageMessageController = async (req, res) => {
         await User.updateOne({ _id: userId }, { $inc: { credits: -2 } })
     }
     catch (error) {
-        console.log("error hai");
-        
         return res.status(500).json({ success: false, message: error.message })
     }
 }
