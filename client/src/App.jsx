@@ -25,7 +25,7 @@ const App = () => {
     <>
       {
         !isMenuOpen &&
-        <img onClick={() => setIsMenuOpen(true)} src={assets.menu_icon} className='not-dark:invert cursor-pointer md:hidden size-7 absolute top-3 left-3' />
+        <img onClick={() => setIsMenuOpen(true)} src={assets.menu_icon} className='not-dark:invert cursor-pointer z-50 md:hidden size-7 absolute top-4 left-4' />
       }
 
       {

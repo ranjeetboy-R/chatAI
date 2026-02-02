@@ -22,11 +22,11 @@ const Message = ({ message }) => {
             <img src={assets.user_icon} className="w-8 rounded-full" />
           </div>
           :
-          <div className="inline-flex flex-col gap-1 p-2 px-4 shadow-[3px_3px_5px_rgba(0,0,0,0.1)] max-w-2xl bg-gray-50 drop-shadow transition-all duration-300 dark:bg-slate-500/30 border border-gray-200 dark:border-gray-600 rounded-xl py-4">
+          <div className="inline-flex flex-col gap-1 md:p-5 p-3 shadow-[3px_3px_5px_rgba(0,0,0,0.1)] max-w-2xl bg-gray-100 drop-shadow transition-all duration-300 dark:bg-slate-500/30 border border-gray-200 dark:border-gray-600 rounded-xl">
             {
               message.isImage ?
                 <a href={message.content} rel="noreferrer" target='_blank' download>
-                  <img src={message.content} alt='Field' className="w-full max-w-md mt-2 rounded-md" />
+                  <img src={message.content} alt='failed' className="w-full max-w-md rounded-md" />
                 </a>
                 :
                 <div className="dark:text-primary reset-tw"><Markdown>{message.content}</Markdown></div>

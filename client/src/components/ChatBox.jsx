@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useAppContext } from '../context/AppContext'
 import { assets } from '../assets/assets'
 import Message from './Message'
@@ -70,7 +70,7 @@ const ChatBox = () => {
   }, [selectedChat])
 
   return (
-    <div className="flex-1 flex flex-col justify-between m-5 md:m-5 xl:mx-30 max-md:mt-14 2xl:pr-40">
+    <div className="flex-1 flex flex-col justify-between m-5 xl:mx-30 md:max-mt-14 2xl:pr-40">
       {/* Chat Messages */}
       <div ref={containerRef} className="flex-1 pb-5 overflow-y-scroll">
         {
@@ -100,32 +100,32 @@ const ChatBox = () => {
       }
 
       {/* Send Chat  */}
-      <form onSubmit={onSubmit} className='flex justify-center items-center gap-5'>
+      <form onSubmit={onSubmit} className='flex justify-center items-center md:gap-5 gap-1'>
 
         <div className="border-b border-gray-300 hover:dark:bg-slate-800/20 transition-all duration-300 dark:border-slate-500/50 hover:border-gray-400">
           <Select
             value={mode}
             onChange={(value) => setMode(value)}
-            className="w-full md:max-w-50 border-none! bg-transparent!"
-            size="large"
+            className="w-full md:max-w-50 border-none! bg-transparent! outline-none! md:p-2!"
+            size="small"
             classNames={{
               popup: { root: "my-select-dropdown" }
             }}
 
           >
             <Select.Option value="text">
-              <label className='flex dark:text-white items-center cursor-pointer transition-all gap-1 text-sm font-medium'><TextInitial size={15} /> Text</label>
+              <label className='flex dark:text-white items-center cursor-pointer transition-all gap-1 text-sm font-medium'><TextInitial size={15} /><p className='hidden md:block'>Text</p></label>
             </Select.Option>
             <Select.Option value="image">
-              <label className='flex dark:text-white items-center cursor-pointer transition-all gap-1 text-sm font-medium'><Images size={15} /> Create Image</label>
+              <label className='flex dark:text-white items-center cursor-pointer transition-all gap-1 text-sm font-medium'><Images size={15} /><p className='hidden md:block'>Image</p></label>
             </Select.Option>
           </Select>
         </div>
 
         <div className="border border-gray-300 dark:border-gray-700 dark:bg-slate-800/30 hover:dark:border-gray-400 hover:border-teal-700 transition-all duration-300 hover:shadow w-full flex items-center max-w-3xl rounded-full">
-          <input autoFocus autoCorrect='on' value={prompt} onChange={(e) => setPrompt(e.target.value)} type="text" placeholder='Ask anything...' className='flex-1 pl-5 outline-none p-3 dark:text-white' />
-          <button disabled={loading} className="bg-linear-to-b from-cyan-600 to-emerald-700 disabled:cursor-not-allowed disabled:opacity-70 dark:disabled:opacity-40 w-8 h-8 flex items-center justify-center text-white transition-all duration-300 cursor-pointer mr-2 rounded-full">
-            {loading ? <SquareStop className='w-full max-w-5' /> : <Send className='w-full max-w-5' />}
+          <input autoFocus autoCorrect='on' value={prompt} onChange={(e) => setPrompt(e.target.value)} type="text" placeholder='Ask anything...' className='flex-1 md:pl-5 outline-none md:p-3 p-2 md:text-base text-sm dark:text-white' />
+          <button disabled={loading} className="bg-linear-to-b from-cyan-600 to-emerald-700 disabled:cursor-not-allowed disabled:opacity-70 dark:disabled:opacity-40 md:w-8 w-7 md:h-8 h-7 flex items-center justify-center text-white transition-all duration-300 cursor-pointer mr-2 rounded-full">
+            {loading ? <SquareStop className='w-full md:max-w-5 max-w-4' /> : <Send className='w-full md:max-w-5 max-w-4' />}
           </button>
         </div>
       </form>

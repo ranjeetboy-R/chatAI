@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useAppContext } from '../context/AppContext'
 import { assets } from '../assets/assets';
-import moment, { } from "moment";
+import moment from "moment";
 import { Tooltip } from 'antd';
 import { BrushCleaning } from "lucide-react";
 import toast from 'react-hot-toast';
@@ -54,7 +54,7 @@ const Sidebar = ({ isMenuOpen, setIsMenuOpen }) => {
   }, [])
 
   return (
-    <div ref={asideRef} className={`flex flex-col h-screen min-w-72 p-5 dark:bg-linear-to-b from-[#242124]/30 to-[#000000]/30 border-r border-[#80609F]/30 backdrop-blur-3xl transition-all duration-500 max-md:absolute left-0 z-10 ${!isMenuOpen && 'max-md:-translate-x-full'}`}>
+    <div ref={asideRef} className={`flex flex-col h-screen min-w-72 p-5 dark:bg-linear-to-b from-[#242124]/30 to-[#000000]/30 border-r border-[#80609F]/30 bg-white dark:bg-black transition-all duration-500 max-md:absolute left-0 z-10 ${!isMenuOpen && 'max-md:-translate-x-full'}`}>
       {/* Logo */}
       <img src={theme === 'dark' ? assets.dark_logo : assets.light_logo} className='w-full max-w-44' />
 
@@ -83,7 +83,7 @@ const Sidebar = ({ isMenuOpen, setIsMenuOpen }) => {
             filter.map((chat) => (
               <div
                 key={chat._id}
-                className="relative p-2 px-4 hover:bg-gray-50 dark:hover:bg-black/30 dark:bg-[#57317C]/10 border border-gray-200 hover:border-gray-300 dark:hover:border-white/20 transition-all dark:border-[#80609F]/15 rounded-lg cursor-pointer flex justify-between group "
+                className={`relative p-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-900/40 dark:bg-[#57317C]/10 border border-gray-200 hover:border-gray-300 dark:hover:border-white/20 transition-all dark:border-[#80609F]/15 rounded-lg cursor-pointer flex justify-between group ${chat._id === selectedChat._id && 'dark:bg-gray-900/40 dark:border-white/20 bg-gray-100 border-gray-400'}`}
               >
                 <div onClick={() => { navigate('/'); setIsMenuOpen(false); setSelectedChat(chat) }} className='hover:pl-1 transition-all duration-300'>
                   <p className='truncate w-50 capitalize'>{chat.messages.length > 0 ? chat.messages[0].content.slice(0, 32) : chat.name}</p>
