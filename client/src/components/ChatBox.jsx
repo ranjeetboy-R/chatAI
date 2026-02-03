@@ -126,7 +126,6 @@ const ChatBox = () => {
           <textarea
             rows={1}
             autoFocus
-            autoCorrect="on"
             value={prompt}
             onChange={(e) => {
               setPrompt(e.target.value);
