@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
 import toast from "react-hot-toast";
 import { useAppContext } from '../context/AppContext';
+import { Loader2 } from 'lucide-react';
 
 const Login = () => {
   const { axios, setToken } = useAppContext()
 
   const [state, setState] = useState("login")
+  const [loading, setLoading] = useState(false)
 
   const [formData, setFormData] = useState({
     name: '',
@@ -23,6 +25,7 @@ const Login = () => {
     const url = state === 'login' ? '/api/user/login' : '/api/user/register'
 
     try {
+      setLoading(true)
       const { data } = await axios.post(url, formData)
       if (data.success) {
         console.log(data);
@@ -33,6 +36,9 @@ const Login = () => {
     }
     catch (error) {
       toast.error(error.response.data.message || null);
+    }
+    finally{
+      setLoading(false)
     }
   }
 
@@ -57,7 +63,8 @@ const Login = () => {
       <div className="mt-4 text-left text-indigo-500">
         <button onClick={() => alert("Feature coming soon!")} className="text-sm" type="reset">Forget password?</button>
       </div>
-      <button type="submit" className="mt-2 w-full h-11 rounded-full text-white bg-indigo-500 hover:opacity-90 transition-opacity">
+      <button disabled={loading} type="submit" className="mt-2 disabled:cursor-not-allowed disabled:opacity-50 w-full flex items-center justify-center gap-2 h-11 rounded-full text-white bg-indigo-500 hover:opacity-90 transition-opacity">
+        {loading && <Loader2 className='size-5 animate-spin'/>}
         {state === "login" ? "Login" : "Sign up"}
       </button>
       <p onClick={() => setState(prev => prev === "login" ? "register" : "login")} className="text-gray-500 text-sm mt-3 mb-11">{state === "login" ? "Don't have an account?" : "Already have an account?"} <a href="#" className="text-indigo-500 hover:underline">click here</a></p>
