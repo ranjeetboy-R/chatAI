@@ -16,6 +16,7 @@ export const AppContextProvider = ({ children }) => {
 
     const [token, setToken] = useState(localStorage.getItem('token'))
     const [loadingUser, setLoadingUser] = useState(true)
+    const [newChatLoading, setNewChatLoading] = useState(false)
 
     // Fetching user 
     const fetchUser = async () => {
@@ -36,6 +37,7 @@ export const AppContextProvider = ({ children }) => {
     // Create new chat
     const createNewChat = async () => {
         try {
+            setNewChatLoading(true)
             if (!user) return toast.error("Login to create a new chat")
             navigate('/')
             await axios.post('/api/chat/create', {}, { headers: { Authorization: token } })
@@ -43,6 +45,9 @@ export const AppContextProvider = ({ children }) => {
         }
         catch (error) {
             toast.error(error.response.data.message)
+        }
+        finally{
+            setNewChatLoading(false)
         }
     }
 
@@ -108,7 +113,8 @@ export const AppContextProvider = ({ children }) => {
         fetchUserChat,
         loadingUser,
         token, setToken,
-        axios
+        axios,
+        newChatLoading
     }
 
     return (

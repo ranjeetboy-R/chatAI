@@ -3,11 +3,11 @@ import { useAppContext } from '../context/AppContext'
 import { assets } from '../assets/assets';
 import moment from "moment";
 import { Tooltip } from 'antd';
-import { BrushCleaning } from "lucide-react";
+import { BrushCleaning, Loader, Plus } from "lucide-react";
 import toast from 'react-hot-toast';
 
 const Sidebar = ({ isMenuOpen, setIsMenuOpen }) => {
-  const { user, chats, setChats, selectedChat, setSelectedChat, theme, setTheme, navigate, createNewChat, fetchUserChat, token, setToken, axios } = useAppContext();
+  const { user, chats, setChats, selectedChat, setSelectedChat, theme, setTheme, navigate, newChatLoading, createNewChat, fetchUserChat, token, setToken, axios } = useAppContext();
   const [search, setSearch] = useState('')
   const asideRef = useRef()
 
@@ -59,8 +59,19 @@ const Sidebar = ({ isMenuOpen, setIsMenuOpen }) => {
       <img src={theme === 'dark' ? assets.dark_logo : assets.light_logo} className='w-full max-w-44' />
 
       {/* New chat button */}
-      <button onClick={createNewChat} className="flex justify-center items-center active:scale-95 transition-all w-full py-2 mt-5 text-white bg-linear-to-r from-cyan-500 to-cyan-700 text-sm rounded cursor-pointer ">
-        <span className='mr-2 text-xl'>+</span> New Chat
+      <button disabled={newChatLoading} onClick={createNewChat} className="flex disabled:cursor-not-allowed disabled:opacity-50 justify-center items-center active:scale-95 transition-all w-full py-2 mt-5 text-white bg-linear-to-r from-cyan-500 to-cyan-700 rounded cursor-pointer ">
+        {
+          newChatLoading ?
+            <p className='flex items-center gap-2'>
+              <Loader className='size-5 animate-spin' />
+              <span>Creating...</span>
+            </p>
+            :
+            <p className='flex items-center gap-2'>
+              <Plus className='size-5'/>
+              New Chat
+            </p>
+        }
       </button>
 
       {/* Search Conversations */}
@@ -152,7 +163,7 @@ const Sidebar = ({ isMenuOpen, setIsMenuOpen }) => {
 
       {/* Close Icon  */}
       <button className="md:hidden block cursor-pointer absolute top-5 right-5 bg-black/10 dark:bg-white/20 p-2 rounded-md">
-      <img onClick={() => setIsMenuOpen(false)} src={assets.close_icon} className='not-dark:invert size-4' />
+        <img onClick={() => setIsMenuOpen(false)} src={assets.close_icon} className='not-dark:invert size-4' />
       </button>
     </div>
   )
