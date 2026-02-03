@@ -59,3 +59,7 @@
   color: white;
 }
 
+textarea {
+  line-height: 1.5;
+  max-height: 400px; /* ChatGPT जैसा limit */
+}

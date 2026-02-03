@@ -151,7 +151,9 @@ const Sidebar = ({ isMenuOpen, setIsMenuOpen }) => {
       </div>
 
       {/* Close Icon  */}
-      <img onClick={() => setIsMenuOpen(false)} src={assets.close_icon} className='md:hidden block not-dark:invert size-4 cursor-pointer absolute top-5 right-5' />
+      <button className="md:hidden block cursor-pointer absolute top-5 right-5 bg-black/10 dark:bg-white/20 p-2 rounded-md">
+      <img onClick={() => setIsMenuOpen(false)} src={assets.close_icon} className='not-dark:invert size-4' />
+      </button>
     </div>
   )
 }

@@ -122,9 +122,22 @@ const ChatBox = () => {
           </Select>
         </div>
 
-        <div className="border border-gray-300 dark:border-gray-700 dark:bg-slate-800/30 hover:dark:border-gray-400 hover:border-teal-700 transition-all duration-300 hover:shadow w-full flex items-center max-w-3xl rounded-full">
-          <input autoFocus autoCorrect='on' value={prompt} onChange={(e) => setPrompt(e.target.value)} type="text" placeholder='Ask anything...' className='flex-1 md:pl-5 outline-none md:p-3 p-2 md:text-base text-sm dark:text-white' />
-          <button disabled={loading} className="bg-linear-to-b from-cyan-600 to-emerald-700 disabled:cursor-not-allowed disabled:opacity-70 dark:disabled:opacity-40 md:w-8 w-7 md:h-8 h-7 flex items-center justify-center text-white transition-all duration-300 cursor-pointer mr-2 rounded-full">
+        <div className={`border border-gray-300 dark:border-gray-700 dark:bg-slate-800/30 hover:dark:border-gray-400 hover:border-teal-700 bg-black/10 transition-all duration-300 hover:shadow w-full flex items-center max-w-3xl p-2 overflow-hidden ${prompt.length > 100 ? 'rounded-4xl items-end' : 'rounded-full'}`}>
+          <textarea
+            rows={1}
+            autoFocus
+            autoCorrect="on"
+            value={prompt}
+            onChange={(e) => {
+              setPrompt(e.target.value);
+              e.target.style.height = "auto";
+              e.target.style.height = e.target.scrollHeight + "px";
+            }}
+            placeholder="Ask anything..."
+            className={`flex-1 overflow-y-auto resize-none overflow-hidden md:pl-5 outline-none md:p-3 p-2 md:text-base text-sm dark:text-white bg-transparent`}
+          />
+
+          <button disabled={loading} className="bg-linear-to-b from-cyan-600 to-emerald-700 disabled:cursor-not-allowed disabled:opacity-70 dark:disabled:opacity-40 md:w-10 w-7 md:h-10 h-7 flex items-center justify-center text-white transition-all duration-300 cursor-pointer mr-2 rounded-full">
             {loading ? <SquareStop className='w-full md:max-w-5 max-w-4' /> : <Send className='w-full md:max-w-5 max-w-4' />}
           </button>
         </div>

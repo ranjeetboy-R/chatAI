@@ -4,42 +4,91 @@ import openai from "../configs/openai.js";
 import Chat from "../models/Chat.js"
 import User from "../models/userModel.js"
 
-// Text generate in gemini-3-flash-preview 
+// Text generate using gemini-3-flash-preview
 export const textMessageController = async (req, res) => {
     try {
-        const userId = req.user._id
+        const userId = req.user._id;
 
+        // Credit check
         if (req.user.credits < 1) {
-            return res.status(201).json({ success: false, message: "You don't have enough credits to use this feature" })
+            return res.status(200).json({
+                success: false,
+                message: "You don't have enough credits"
+            });
         }
 
-        const { chatId, prompt } = req.body
+        const { chatId, prompt } = req.body;
 
-        const chat = await Chat.findOne({ userId, _id: chatId })
+        const chat = await Chat.findOne({ _id: chatId, userId });
+        if (!chat) {
+            return res.status(404).json({
+                success: false,
+                message: "Chat not found"
+            });
+        }
 
-        chat?.messages.push({ role: "user", content: prompt, timestamp: Date.now(), isImage: false })
+        // Save user message first
+        const userMessage = {
+            role: "user",
+            content: prompt,
+            timestamp: Date.now(),
+            isImage: false
+        };
 
-        const { choices } = await openai.chat.completions.create({
-            model: "gemini-3-flash-preview",
-            messages: [
-                {
-                    role: "user",
-                    content: prompt,
-                },
-            ],
+        chat.messages.push(userMessage);
+
+        // 🔹 Context limit (last 15 messages)
+        const MAX_CONTEXT = 15;
+
+        const contextMessages = chat.messages
+            .slice(-MAX_CONTEXT)
+            .map(msg => ({
+                role: msg.role,
+                content: msg.content
+            }));
+
+        // Optional system instruction
+        contextMessages.unshift({
+            role: "system",
+            content: "You are a helpful AI assistant. Reply clearly and naturally."
         });
 
-        const reply = { ...choices[0].message, timestamp: Date.now(), isImage: false }
-        res.status(200).json({ success: true, reply })
+        // Gemini API call
+        const { choices } = await openai.chat.completions.create({
+            model: "gemini-3-flash-preview",
+            messages: contextMessages,
+        });
 
-        chat?.messages.push(reply)
-        await chat.save()
-        await User.updateOne({ _id: userId }, { $inc: { credits: -1 } })
+        const aiReply = {
+            role: "assistant",
+            content: choices[0].message.content,
+            timestamp: Date.now(),
+            isImage: false
+        };
+
+        // Save AI reply
+        chat.messages.push(aiReply);
+        await chat.save();
+
+        // Deduct credit
+        await User.updateOne(
+            { _id: userId },
+            { $inc: { credits: -1 } }
+        );
+
+        return res.status(200).json({
+            success: true,
+            reply: aiReply
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: `Text Message Error: ${error.message}`
+        });
     }
-    catch (error) {
-        return res.status(500).json({ success: false, message: `Text Message Error: ${error.message}` })
-    }
-}
+};
+
 
 // Image generate in gemini-3-flash-preview
 export const imageMessageController = async (req, res) => {
