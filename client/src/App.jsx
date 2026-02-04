@@ -24,7 +24,7 @@ const App = () => {
   return (
     <>
       {
-        !isMenuOpen &&
+        (!isMenuOpen && user) &&
         <button onClick={() => setIsMenuOpen(true)} className='bg-black/20 dark:bg-white/30 p-1.5 rounded-md cursor-pointer z-50 md:hidden absolute top-1/2 -translate-y-1/2 left-3'>
           <img src={assets.menu_icon} className='not-dark:invert size-7' />
         </button>
