@@ -28,7 +28,6 @@ const Login = () => {
       setLoading(true)
       const { data } = await axios.post(url, formData)
       if (data.success) {
-        console.log(data);
         setToken(data.token)
         localStorage.setItem('token', data.token)
       }
