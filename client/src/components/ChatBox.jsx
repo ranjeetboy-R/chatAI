@@ -88,7 +88,7 @@ const ChatBox = () => {
           ))
         }
         {/* Show Loading Animation */}
-        {loading && <div className="loader"></div>}
+        {loading && <div className="loader mt-2"></div>}
       </div>
 
       {

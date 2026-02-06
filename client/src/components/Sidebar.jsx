@@ -94,7 +94,7 @@ const Sidebar = ({ isMenuOpen, setIsMenuOpen }) => {
             filter.map((chat) => (
               <div
                 key={chat._id}
-                className={`relative p-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-900/40 dark:bg-[#57317C]/10 border border-gray-200 hover:border-gray-300 dark:hover:border-white/20 transition-all dark:border-[#80609F]/15 rounded-lg cursor-pointer flex justify-between group ${chat._id === selectedChat._id && 'dark:bg-gray-900/40 dark:border-white/20 bg-gray-100 border-gray-400'}`}
+                className={`relative p-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-900/40 dark:bg-[#57317C]/10 border border-gray-200 hover:border-gray-300 dark:hover:border-white/20 transition-all dark:border-[#80609F]/15 rounded-lg cursor-pointer flex justify-between group ${chat._id === selectedChat._id && 'dark:bg-gray-900/60 dark:border-white/30 bg-gray-100 border-gray-400'}`}
               >
                 <div onClick={() => { navigate('/'); setIsMenuOpen(false); setSelectedChat(chat) }} className='hover:pl-1 transition-all duration-300'>
                   <p className='truncate w-50 capitalize'>{chat.messages.length > 0 ? chat.messages[0].content.slice(0, 32) : chat.name}</p>
@@ -157,7 +157,7 @@ const Sidebar = ({ isMenuOpen, setIsMenuOpen }) => {
           <p className='font-light'>{user?.name}</p>
         </div>
         <Tooltip title="Logout user">
-          <img onClick={logout} src={assets.logout_icon} className='size-5 not-dark:invert opacity-0 group-hover:opacity-100 transition-all' />
+          <img onClick={logout} src={assets.logout_icon} className='size-5 not-dark:invert md:opacity-0 md:group-hover:opacity-100 transition-all' />
         </Tooltip>
       </div>
 
