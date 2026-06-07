@@ -37,4 +37,6 @@ https://chat-ai-pearl-kappa.vercel.app/
 **Deployment**
 - Vercel
 
-## 📂 Project Structure
+## Screenshot
+<img width="1366" height="768" alt="Screenshot 2026-06-07 164746" src="https://github.com/user-attachments/assets/d5ceebc0-5a2c-4fc7-bbcc-770c52afba72" />
+
